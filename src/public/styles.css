@@ -1,0 +1,29 @@
+#screen {
+  border: 10px solid #CCC;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  image-rendering: -moz-crisp-edges;
+  width: 400px;
+  height: 400px;
+}
+main#main {
+  display: flex;
+}
+nav#score {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  align-items: center;
+}
+table {
+  width: 300px;
+}
+#menu {
+  width: 420px;
+  height: 420px;
+  text-align: center;
+}
+button {
+  width: 150px;
+  height: 30px;
+}

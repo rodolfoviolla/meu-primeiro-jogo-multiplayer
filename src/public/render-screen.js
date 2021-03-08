@@ -1,12 +1,34 @@
-export const renderScreen = (screen, game, requestAnimationFrame, currentPlayerId) => {
-  const context = screen.getContext('2d');
-
+const clearScreen = (context, tableBody) => {
   context.fillStyle = 'white';
   context.fillRect(0, 0, screen.width, screen.height);
+  tableBody.innerHTML = '';
+}
+
+export const renderScreen = (screen, document, game, requestAnimationFrame, currentPlayerId) => {
+  const context = screen.getContext('2d');
+  const tableBody = document.getElementById('table-body');
+
+  clearScreen(context, tableBody);
 
   game.state.players.map(player => {
-    context.fillStyle = 'black';
+    const fillColor = player.playerId === currentPlayerId ? '#F0DB4F' : 'black';
+
+    context.fillStyle = fillColor;
     context.fillRect(player.playerX, player.playerY, 1, 1);
+
+    const trElement = document.createElement('tr');
+    const thIDElement = document.createElement('th');
+    const thScoreElement = document.createElement('th');
+    
+    thIDElement.textContent = player.playerId;
+    thScoreElement.textContent = player.score;
+
+    trElement.appendChild(thIDElement);
+    trElement.appendChild(thScoreElement);
+
+    trElement.style.color = fillColor;
+
+    tableBody.appendChild(trElement);
   });
 
   game.state.fruits.map(fruit => {
@@ -14,12 +36,5 @@ export const renderScreen = (screen, game, requestAnimationFrame, currentPlayerI
     context.fillRect(fruit.fruitX, fruit.fruitY, 1, 1);
   });
 
-  const currentPlayer = game.state.players.find(player => player.playerId === currentPlayerId);
-
-  if (currentPlayer) {
-    context.fillStyle = '#F0DB4F';
-    context.fillRect(currentPlayer.playerX, currentPlayer.playerY, 1, 1);
-  }
-
-  requestAnimationFrame(() => renderScreen(screen, game, requestAnimationFrame, currentPlayerId));
+  requestAnimationFrame(() => renderScreen(screen, document, game, requestAnimationFrame, currentPlayerId));
 }

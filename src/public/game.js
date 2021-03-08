@@ -2,12 +2,28 @@ export const createGame = () => {
   const state = {
     players: [],
     fruits: [],
-    screen: { width: 10, height: 10 },
+    screen: { width: 30, height: 30 },
+    fruitIntervalId: null,
   };
 
   const observers = [];
 
-  const start = () => setInterval(addFruit, 2000);
+  const start = () => {
+    if (!state.fruitIntervalId) {
+      const fruitIntervalId = setInterval(addFruit, 2000);
+      state.fruitIntervalId = fruitIntervalId;
+  
+      notifyAll({ type: 'game-start' });
+    }
+  }
+
+  const stop = () => {
+    if (state.fruitIntervalId) {
+      clearInterval(state.fruitIntervalId);
+      state.fruitIntervalId = null;
+      notifyAll({ type: 'game-stop' });
+    }
+  }
 
   const subscribe = observerFunction => observers.push(observerFunction);
 
@@ -20,9 +36,9 @@ export const createGame = () => {
     const playerX = x ? x : Math.floor(Math.random() * state.screen.width);
     const playerY = y ? y : Math.floor(Math.random() * state.screen.height);
 
-    state.players.push({ playerId, playerX, playerY });
+    state.players.push({ playerId, playerX, playerY, score: 0 });
 
-    notifyAll({ type: 'add-player', playerId, playerX, playerY });
+    notifyAll({ type: 'add-player', playerId, playerX, playerY, score: 0 });
   }
 
   const addFruit = command => {
@@ -66,7 +82,10 @@ export const createGame = () => {
     const checkForFruitCollision = player => {
       const fruitToRemove = state.fruits.find(fruit => fruit.fruitX === player.playerX && fruit.fruitY === player.playerY);
 
-      if (fruitToRemove) removeFruit(fruitToRemove);
+      if (fruitToRemove) {
+        removeFruit(fruitToRemove);
+        addScore(player);
+      }
     }
 
     const acceptedMoves = {
@@ -92,15 +111,24 @@ export const createGame = () => {
     }
   }
 
+    const addScore = command => {
+      const { playerId } = command;
+      const player = state.players.find(player => player.playerId === playerId);
+
+      player.score++;
+    } 
+
   return {
     state,
     start,
+    stop,
     subscribe,
     setState,
     addPlayer,
     addFruit,
     removePlayer,
-    removeFruit,    
+    removeFruit,
     movePlayer,
+    addScore,
   };
 }

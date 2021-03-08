@@ -1,7 +1,7 @@
 <html>
   <header>
     <meta charset="utf-8">
-    <title>Jogo Multiplayer</title>
+    <title>[ADMIN] Jogo Multiplayer</title>
 
     <link rel="stylesheet" href="styles.css">
     <script src="/socket.io/socket.io.js"></script>
@@ -24,10 +24,10 @@
       </nav>
     </main>
 
-    <!-- <p id="menu">
+    <p id="menu">
       <button id="start-game-button">Iniciar Jogo</button>
-      <button id="stop-game-button">Interromper Jogo</button>
-    </p> -->
+      <button id="stop-game-button" disabled>Interromper Jogo</button>
+    </p>
 
     <script type="module">
       import { createGame } from './game.js';
@@ -38,11 +38,22 @@
       const keyboardListener = createKeyboardListener(document);
       const socket = io();
       
-      // const startGameButton = document.getElementById('start-game-button');
-      // startGameButton.addEventListener('click', () => socket.emit('game-start'));
+      const startGameButton = document.getElementById('start-game-button');
+      const stopGameButton = document.getElementById('stop-game-button');
 
-      // const stopGameButton = document.getElementById('stop-game-button');
-      // stopGameButton.addEventListener('click', () => socket.emit('game-stop'));
+      startGameButton.addEventListener('click', () => {
+        socket.emit('game-start');
+
+        startGameButton.disabled = true;
+        stopGameButton.disabled = false;
+      });
+
+      stopGameButton.addEventListener('click', () => {
+        socket.emit('game-stop');
+
+        startGameButton.disabled = false;
+        stopGameButton.disabled = true;
+      });
       
       socket.on('connect', () => {
         const playerId = socket.id;
