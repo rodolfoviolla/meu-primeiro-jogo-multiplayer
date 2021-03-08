@@ -11,7 +11,6 @@ const port = 3000;
 app.use(express.static('src/public'));
 
 const game = createGame();
-game.start();
 
 game.subscribe(command => {
   console.log(`> Emitting ${command.type}`);
@@ -23,7 +22,6 @@ sockets.on('connection', socket => {
   console.log(`> Player connected: ${playerId}`);
 
   game.addPlayer({ playerId });
-  console.log(game.state);
 
   socket.emit('setup', game.state);
 
@@ -38,6 +36,10 @@ sockets.on('connection', socket => {
 
     game.movePlayer(command);
   });
+
+  socket.on('game-start', () => game.start());
+
+  socket.on('game-stop', () => game.stop());
 });
 
 server.listen(port, () => console.log(`> Server listening on port ${port}`));
