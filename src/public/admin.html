@@ -73,6 +73,8 @@
         keyboardListener.subscribe(command => socket.emit(command.type, command));
       });
 
+      socket.on('disconnect', () => keyboardListener.unsubscribeAll());
+
       socket.on('add-player', command => game.addPlayer(command));
 
       socket.on('remove-player', command => game.removePlayer(command));

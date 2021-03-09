@@ -8,6 +8,8 @@ export const createKeyboardListener = document => {
   
   const subscribe = observerFunction => state.observers.push(observerFunction);
 
+  const unsubscribeAll = () => state.observers = [];
+
   const notifyAll = command => state.observers.map(observerFunction => observerFunction(command));
 
   document.addEventListener('keydown', event => notifyAll({ 
@@ -19,5 +21,6 @@ export const createKeyboardListener = document => {
   return {
     registerPlayerId,
     subscribe,
+    unsubscribeAll,
   };
 }

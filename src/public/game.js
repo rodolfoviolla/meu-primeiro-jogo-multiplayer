@@ -8,6 +8,8 @@ export const createGame = () => {
 
   const observers = [];
 
+  const subscribe = observerFunction => observers.push(observerFunction);
+
   const start = () => {
     if (!state.fruitIntervalId) {
       const fruitIntervalId = setInterval(addFruit, 2000);
@@ -24,8 +26,6 @@ export const createGame = () => {
       notifyAll({ type: 'game-stop' });
     }
   }
-
-  const subscribe = observerFunction => observers.push(observerFunction);
 
   const notifyAll = command => observers.map(observerFunction => observerFunction(command));
 
@@ -120,9 +120,9 @@ export const createGame = () => {
 
   return {
     state,
+    subscribe,
     start,
     stop,
-    subscribe,
     setState,
     addPlayer,
     addFruit,

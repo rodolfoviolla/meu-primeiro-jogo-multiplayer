@@ -24,11 +24,6 @@
       </nav>
     </main>
 
-    <!-- <p id="menu">
-      <button id="start-game-button">Iniciar Jogo</button>
-      <button id="stop-game-button">Interromper Jogo</button>
-    </p> -->
-
     <script type="module">
       import { createGame } from './game.js';
       import { createKeyboardListener } from './keyboard-listener.js';
@@ -37,12 +32,6 @@
       const game = createGame();
       const keyboardListener = createKeyboardListener(document);
       const socket = io();
-      
-      // const startGameButton = document.getElementById('start-game-button');
-      // startGameButton.addEventListener('click', () => socket.emit('game-start'));
-
-      // const stopGameButton = document.getElementById('stop-game-button');
-      // stopGameButton.addEventListener('click', () => socket.emit('game-stop'));
       
       socket.on('connect', () => {
         const playerId = socket.id;
@@ -61,6 +50,8 @@
         keyboardListener.subscribe(game.movePlayer);
         keyboardListener.subscribe(command => socket.emit(command.type, command));
       });
+
+      socket.on('disconnect', () => keyboardListener.unsubscribeAll());
 
       socket.on('add-player', command => game.addPlayer(command));
 
